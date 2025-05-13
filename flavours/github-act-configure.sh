@@ -8,10 +8,7 @@ if [ -f "$CONFIG_FILE" ]; then
     cat "$CONFIG_FILE"
 fi
 
-ARCH=$(curl -s \
-    https://download.cheribsd.org/releases/arm64/aarch64c/ | \
-    grep -Eo "\w{1,}\.\w{1,}" | sort -u)
-CHERIBSD_BUILD_ID=$(echo ${ARCH} | awk -F " " '{print $NF}')
+CHERIBSD_BUILD_ID="${CHERIBSD_BUILD_ID:-$(uname -a | grep -iEo "releng/\w{1,}.\w{1,}" | cut -d "/" -f 2)}"
 # Configure the runner
 cd /root/runner || return 1
 GODEBUG="asyncpreemptoff=1" /usr/local64/bin/github-act-runner configure \
